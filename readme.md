@@ -6,8 +6,8 @@ Extracts variables from the local environment and converts them to Ansible varia
 
 Install: `uv add [--dev] ans-env-loader`
 
-Then pllace an `ans-env-vars.yaml` and an `env-loader.py` into your Ansible playbooks root directory as
-follows:
+Then place an `ans-env-vars.yaml` and an `env-loader.py` into your Ansible playbooks root directory
+as follows:
 
 ```sh
  ❯ tree

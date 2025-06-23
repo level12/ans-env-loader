@@ -3,6 +3,10 @@
 dev-mode-dirs = ['src']
 
 
+[build.targets.wheel]
+packages = ['src/ans_env_loader']
+
+
 ## Env: default
 [envs.default]
 installer = "uv"

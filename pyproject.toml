@@ -7,7 +7,7 @@ build-backend = 'hatchling.build'
 
 
 [project]
-name = 'AnsEnvVars'
+name = 'ans-env-vars'
 authors = [
     {name = 'Randy Syring', email = 'randy.syring@level12.io'},
 ]
