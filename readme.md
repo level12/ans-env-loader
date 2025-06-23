@@ -1,4 +1,32 @@
-# AnsibleEnvVars
+# Ansible Env Vars
+
+## Install and Setup
+
+Install: `uv add [--dev] ans-env-loader`
+
+Then pllace an `ans-env-vars.yaml` and an `env-loader.py` into your Ansible playbooks root directory as
+follows:
+
+```sh
+ ❯ tree
+├── ansible.cfg
+├── ans-env-vars.yaml
+├── hosts.ini
+├── playbook.yaml
+└── vars_plugins
+    ├── env-loader.py
+
+
+ ❯ cat vars_plugins/env-loader.py
+from ans_env_loader import VarsModule as VarsModule
+
+
+ ❯ cat ans-env-vars.yaml
+# Ansible var name is the same as the expected env var
+- app_smtp_host
+# Map Ansible var name to a different expected env var
+- app_flask_secret: FLASK_SECRET
+```
 
 ## Dev
 
