@@ -1,11 +1,20 @@
+"""
+This conftest mostly for handling warnings.  Use the other conftest.py files for app/test config.
+
+- Filters for warnings that are triggered during import go at the top level.
+- Filters for warnings thrown during test runs goes in pytest_configure() below.
+
+Having two conftest.py files is necessary because the warning configuration needs to happen before
+the application's tests and/or code have a chance to import other libraries which may trigger
+warnings.  So this file remains a filesystem level above the "real" conftest.py which does all the
+imports.
+"""
+
 import warnings
 
 
-# Filters for warnings that are triggered during import go at the top level.  Filters for warnings
-# thrown during test runs goes in pytest_configure() below.
-
-# Any errors not noted here should cause pytest to throw an error. It seems like this should be
-# last in the list, but warnings that match multiple lines will apply the last line matched.
+# Treat any warning issued in a test as an exception so we are forced to explicitly handle or
+# ignore it.
 warnings.filterwarnings('error')
 # Examples:
 # warnings.filterwarnings(
@@ -20,26 +29,22 @@ warnings.filterwarnings('error')
 #     category=DeprecationWarning,
 #     module='passlib.utils',
 # )
+###########
+# REMINDER: when adding an ignore, add an issue to track it
+###########
 
 
 def pytest_configure(config):
     """
-    At some point during testing, pytest does something to the warnings module which clears out
-    any previously setup filters, like the one set above, and creates its own filters from
-    the config.
+    You may be able to do all your ignores above.  If you find some warnings need to be ignored
+    in pytest, you can do that with something like:
 
-    The pytest warnings docs say that any previously setup filters should be respected but that's
-    not the observed behavior.
+        config.addinivalue_line(
+            'filterwarnings',
+            # Note the lines that follow are implicitly concatinated, no "," at the end
+            'ignore'
+            ':pythonjsonlogger.jsonlogger has been moved to pythonjsonlogger.json'
+            ':DeprecationWarning'
+            ':wtforms.meta',
+        )
     """
-
-    # Comment above explains why error comes first and not last.
-    config.addinivalue_line('filterwarnings', 'error')
-    # Example:
-    # config.addinivalue_line(
-    #     'filterwarnings',
-    #     # Note the lines that follow are implicitly concatinated, no "," at the end
-    #     "ignore:'iter_groups' is expected to return 4 items tuple since wtforms 3.1, this will be"
-    #     ' mandatory in wtforms 3.2'
-    #     ':DeprecationWarning'
-    #     ':wtforms.meta',
-    # )
