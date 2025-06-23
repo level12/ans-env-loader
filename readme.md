@@ -1,6 +1,6 @@
 # Ansible Env Vars
-[![Nox](https://github.com/level12/ans-env-vars/actions/workflows/nox.yaml/badge.svg)](https://github.com/level12/ans-env-vars/actions/workflows/nox.yaml)
-[![pypi](https://img.shields.io/pypi/v/ans-env-vars)](https://pypi.org/project/ans-env-vars/)
+[![Nox](https://github.com/level12/ans-env-loader/actions/workflows/nox.yaml/badge.svg)](https://github.com/level12/ans-env-loader/actions/workflows/nox.yaml)
+[![pypi](https://img.shields.io/pypi/v/ans-env-loader)](https://pypi.org/project/ans-env-loader/)
 
 Extracts variables from the local environment and converts them to Ansible variables.
 
