@@ -1,5 +1,7 @@
 # Ansible Env Vars
 
+Extracts variables from the local environment and converts them to Ansible variables.
+
 ## Install and Setup
 
 Install: `uv add [--dev] ans-env-loader`
