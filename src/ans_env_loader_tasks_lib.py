@@ -25,5 +25,5 @@ def sub_run(
         return result
     except subprocess.CalledProcessError as e:
         if capture:
-            print(e.stderr)
+            print(e.stdout, e.stderr, sep='\n')
         raise

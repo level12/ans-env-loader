@@ -43,6 +43,7 @@ tests = [
 
     # App specific:
     # TODO: fill in app deps here
+    "ansible>=11.7.0",
 ]
 # Used by nox
 pre-commit = [

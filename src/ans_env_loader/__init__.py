@@ -27,8 +27,7 @@ class VarsModule(BaseVarsPlugin):
                 'Expected "ans-env-vars.yaml" to be a list of strings',
             )
 
-        missing = []
-        result = {}
+        ans_vars = {}
         for item in line_items:
             if isinstance(item, dict):
                 ans_var_name, env_var_name = next(iter(item.items()))
@@ -39,11 +38,10 @@ class VarsModule(BaseVarsPlugin):
 
             env_val = os.environ.get(env_var_name)
             if env_val is None:
-                missing.append(env_var_name)
+                ans_vars[ans_var_name] = (
+                    "{{ undef(hint='`" + env_var_name + "` isn't set in the environment') }}"
+                )
             else:
-                result[ans_var_name] = env_val
+                ans_vars[ans_var_name] = env_val
 
-        if missing:
-            raise AnsibleError('Required env variables not set: {}'.format(', '.join(missing)))
-
-        return result
+        return ans_vars

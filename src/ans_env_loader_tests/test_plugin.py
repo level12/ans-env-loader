@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import subprocess
 
@@ -24,16 +25,17 @@ def run_test(ident, inv_fpath='hosts', **kwargs) -> subprocess.CompletedProcess:
 class TestPlugin:
     def test_env_vars_not_present(self):
         result = run_test('ok', check=False)
-        assert result.returncode == 1
-        assert result.stderr.strip() == 'ERROR! Required env variables not set: foo, FLASK_SECRET'
+        assert result.returncode == 2
+        result = json.loads(result.stdout)
+        play_result = result['plays'][0]['tasks'][0]['hosts']['localhost']
+        assert play_result['failed']
+        assert play_result['msg'].startswith(
+            'An unhandled exception occurred while templating'
+            " '{{ undef(hint='`FLASK_SECRET` isn't set in the environment') }}'.",
+        )
 
-        result = run_test('ok', env={'foo': 'baz'}, check=False)
-        assert result.returncode == 1
-        assert result.stderr.strip() == 'ERROR! Required env variables not set: FLASK_SECRET'
-
-        result = run_test('ok', env={'foo': 'baz', 'FLASK_SECRET': 'make it so'})
+        result = run_test('ok', env={'FLASK_SECRET': 'make it so'})
         stdout = result.stdout
-        assert '"foo": "baz"' in stdout
         assert '"app_flask_secret": "make it so"' in stdout
 
     def test_var_files_missing(self, tmp_path: Path):
@@ -62,8 +64,7 @@ class TestPlugin:
         result = run_test(
             'nested-inv',
             inv_fpath='inv/hosts',
-            env={'foo': 'baz', 'FLASK_SECRET': 'make it so'},
+            env={'FLASK_SECRET': 'make it so'},
         )
         stdout = result.stdout
-        assert '"foo": "baz"' in stdout
         assert '"app_flask_secret": "make it so"' in stdout
