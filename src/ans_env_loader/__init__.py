@@ -1,5 +1,3 @@
-# vars_plugins/import_env_vars.py
-
 import os
 from pathlib import Path
 
@@ -8,11 +6,20 @@ from ansible.plugins.vars import BaseVarsPlugin
 
 
 class VarsModule(BaseVarsPlugin):
-    def get_vars(self, loader, path, entities, cache=True):
-        env_vars_path = Path(path) / 'ans-env-vars.yaml'
+    def ans_find_vars_file(self, start_path: str):
+        current_path = Path(start_path)
+        while current_path.parent != current_path:
+            if current_path.joinpath('vars_plugins').exists():
+                vars_fpath = current_path / 'ans-env-vars.yaml'
+                if vars_fpath.exists():
+                    return vars_fpath
+            current_path = current_path.parent
 
-        if not env_vars_path.exists():
-            raise AnsibleError('Expected "ans-env-vars.yaml" to exist')
+    def get_vars(self, loader, path, entities, cache=True):
+        env_vars_path = self.ans_find_vars_file(path)
+
+        if not env_vars_path:
+            raise AnsibleError(f'Expected "ans-env-vars.yaml" to exist in {path} or parent')
 
         line_items = loader.load_from_file(env_vars_path.as_posix())
         if not isinstance(line_items, list):
