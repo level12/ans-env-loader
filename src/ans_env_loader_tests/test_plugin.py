@@ -34,9 +34,10 @@ class TestPlugin:
             " '{{ undef(hint='`FLASK_SECRET` isn't set in the environment') }}'.",
         )
 
-        result = run_test('ok', env={'FLASK_SECRET': 'make it so'})
+        result = run_test('ok', env={'FLASK_SECRET': 'make it so', 'APP_PG_PASS': 'engage'})
         stdout = result.stdout
-        assert '"app_flask_secret": "make it so"' in stdout
+        assert '"app_flask_SECRET": "make it so"' in stdout
+        assert '"app_pg_pass": "engage"' in stdout
 
     def test_var_files_missing(self, tmp_path: Path):
         error_msg_start = 'ERROR! Expected "ans-env-vars.yaml" to exist in'
@@ -56,9 +57,7 @@ class TestPlugin:
     def test_not_list(self):
         result = run_test('not-list', check=False)
         assert result.returncode == 1
-        assert (
-            result.stderr.strip() == 'ERROR! Expected "ans-env-vars.yaml" to be a list of strings'
-        )
+        assert result.stderr.strip() == 'ERROR! Expected "ans-env-vars.yaml" to be a list'
 
     def test_nested_inventory(self):
         result = run_test(

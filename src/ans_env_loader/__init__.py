@@ -24,7 +24,7 @@ class VarsModule(BaseVarsPlugin):
         line_items = loader.load_from_file(env_vars_path.as_posix())
         if not isinstance(line_items, list):
             raise AnsibleError(
-                'Expected "ans-env-vars.yaml" to be a list of strings',
+                'Expected "ans-env-vars.yaml" to be a list',
             )
 
         ans_vars = {}
@@ -33,7 +33,7 @@ class VarsModule(BaseVarsPlugin):
                 ans_var_name, env_var_name = next(iter(item.items()))
             else:
                 assert isinstance(item, str)
-                ans_var_name = item
+                ans_var_name = item.lower()
                 env_var_name = item
 
             env_val = os.environ.get(env_var_name)
